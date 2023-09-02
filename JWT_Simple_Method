@@ -1,0 +1,46 @@
+//Implement a Java method to create a JWT using a given payload and secret key
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+public class JwtGenerator {
+
+    // Replace this with your secret key (it should be kept secret)
+    private static final String SECRET_KEY = "your-secret-key";
+
+    public static String generateJwt(Map<String, Object> payload) {
+        // Define the expiration date for the token (e.g., 1 hour from now)
+        Date expiration = new Date(System.currentTimeMillis() + 3600000); // 1 hour in milliseconds
+
+        // Generate a secret key from the provided string key
+        SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+        // Build the JWT
+        String jwt = Jwts.builder()
+                .setClaims(payload)
+                .setExpiration(expiration)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return jwt;
+    }
+
+    public static void main(String[] args) {
+        // Example payload
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("userId", 123456);
+        payload.put("username", "john_doe");
+
+        // Generate a JWT using the payload
+        String jwt = generateJwt(payload);
+
+        // Print the generated JWT
+        System.out.println("Generated JWT: " + jwt);
+    }
+}
